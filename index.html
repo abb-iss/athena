@@ -1,0 +1,85 @@
+<html>
+<!-- to make sure that all Javascript is executed, load this file from a web server, e.g., 
+ python -m SimpleHTTPServer 8080
+-->
+<head>
+<script src="graphhighlighter.js"></script>
+
+<script type="text/javascript">
+function updateFile () {
+	var fileName = "graphs/" + document.getElementById("svgfile").value.split(/(\\|\/)/g).pop();
+	
+	if (fileName.endsWith(".svg")) {
+		document.getElementById("svgcode").innerHTML = "<object id=\"graphobject\" type=\"image/svg+xml\" data=\""+fileName+"\"></object>";
+		var embed = document.getElementById("graphobject");
+		embed.addEventListener('load', function()
+		{
+    		registerClickHandlers();
+		});
+		
+	}
+	return false;
+}
+
+
+function debug (message) {
+	document.getElementById("debuginfo"). innerHTML += "<br />"+message;
+}
+
+</script>
+
+<link rel=stylesheet href="styles.css">
+</head>
+<body>
+
+
+<div class=container>
+<div class=header>
+<h1 class=header-heading>Interactive Athena Graph</h1>
+</div>
+
+<div class=nav-bar>
+<form  method="post"  width="100px" style="color: #fff;">
+    <input id="svgfile" type="file" name="svgfile" accept="*.svg" onchange="updateFile();">
+	<!-- <button onclick="updateFile();" type="button">submit</button> -->
+	<!--Mode: <input type="radio" name="mode" value="highlight" checked> highlight
+	<input type="button" label="zoom" />-->
+</form>
+</div>
+
+<div class=main style="overflow-x: scroll; overflow-y: scroll; max-height:600px;">
+<div id="svgcode">
+<object id="graphobject" type="image/svg+xml" data="graphs/src.svg"></object>
+</div>
+</div>
+
+
+<div class="footer">
+&copy; Copyright 2016 ABB Switzerland Ltd. Corporate Research 
+<!--
+ <a href="#" onclick="registerClickHandlers();">register click handlers</a>
+-->
+</div>
+
+
+</div>
+
+<p id="debuginfo"></p>
+
+
+
+
+
+<script type="text/javascript">
+// register click handlers after SVG has loaded
+var embed = document.getElementById("graphobject");
+embed.addEventListener('load', function()
+{
+    registerClickHandlers();
+});
+</script>
+
+
+
+</body>
+</html>
