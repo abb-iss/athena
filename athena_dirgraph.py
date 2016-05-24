@@ -133,6 +133,7 @@ def create_graph ():
         
 
         for occurrence in [x for x in occurrences if x[0] == filename]:
+            #sys.stderr.write (str(occurrence) + '\n')
             # Occurrence: (filename, linenumber, definition)
             symbolsOnSameLine = 0
             
@@ -203,6 +204,7 @@ def parse_input (filename):
     
     file=open(filename,'r') 
     row = file.readlines()
+    previous_line_number = -1    # required for #elif statements; for these, we will rewrite their line number
     
     for line in row:
         parsed_line = line.split(":")
@@ -214,6 +216,7 @@ def parse_input (filename):
 #         if DEBUG:
 #             sys.stderr.write("\nParsing line '" + line)
         
+        
         for definition in extract_symbols_from_statement(statement):
 #             if DEBUG:
 #                 sys.stderr.write("Definition:  '" + definition + "\n")
@@ -221,6 +224,7 @@ def parse_input (filename):
 #                 sys.stderr.write("Line number: '" + str(linenumber) + "\n")
             symbols.add(definition)
             
+            # update the symbols map (counting occurrences of each symbol)
             try:
                 x = symbols_map [definition]
                 symbols_map [definition] = x+1
@@ -228,9 +232,16 @@ def parse_input (filename):
                 symbols_map [definition] = 1
             
             filenames.add (filename)
+            
+            # special case: #elif. They should logically appear on the same line as the previous statement
+            if statement.strip().startswith("#elif"):
+                linenumber = previous_line_number
+            
             occurrences.append((filename, linenumber, definition))
-            #insert_occurence_in_db (definition, filename, int(linenumber))
+            previous_line_number = linenumber
+            
 
+            
     file.close()
 
 
