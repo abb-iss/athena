@@ -60,6 +60,23 @@ do
 	fi
 done
 
+EXCLUDE_FOLDER_COMMAND=()
+EXCLUDE_FOLDER_COUNT=0
+# TODO: for each folder in exclude_directories.txt
+# add -not -path "*folder*"  to EXCLUDE_FOLDER_COMMAND
+
+while read foldername; do
+	if [ "$1" != "" ]; then 
+		EXCLUDE_FOLDER_COMMAND+=(-not -path "*${foldername}*") 
+		EXCLUDE_FOLDER_COUNT=$((EXCLUDE_FOLDER_COUNT+1)) 
+	fi
+done <exclude_directories.txt
+
+
+
+printf "* Exclude directories......... "
+	echo -e "${GREENCOLOR}$EXCLUDE_FOLDER_COUNT$DEFAULTCOLOR (see exclude_directories.txt)";
+
 
 printf "* Scan header files........... "
 
@@ -84,7 +101,8 @@ echo -e "***********************************************************************
 # STEP 1: scan Makefiles, gyp files etc 
 #-----------------------------------------------------------
 
-find $WHERETOSEARCH -type f \( -name "Makefile" -or -name "makefile" -or -name "*.gyp" \) > tmp/filelist.txt
+find $WHERETOSEARCH -type f \( -name "Makefile" -or -name "makefile" -or -name "*.gyp" \) "${EXCLUDE_FOLDER_COMMAND[@]}" > tmp/filelist.txt
+
 
 if [ -e "$MAKEFILEDEFINITIONS" ]
 then
@@ -115,10 +133,14 @@ echo "* Recursively searching $WHERETOSEARCH for preprocessor directives"
 # WITHOUT headers
 
 if [ "$INCLUDEHEADERS" == 'true' ]; then
-	find $WHERETOSEARCH -type f \( -name "*.cc" -or -name "*.c" -or -name "*.cpp" -or -name "*.h" -or -name "*.hpp" \)  > tmp/filelist.txt;
-else
-	find $WHERETOSEARCH -type f \( -name "*.cc" -or -name "*.c" -or -name "*.cpp" \)  > tmp/filelist.txt;
+	find $WHERETOSEARCH -type f \( -name "*.cc" -or -name "*.c" -or -name "*.cpp" -or -name "*.h" -or -name "*.hpp" \) "${EXCLUDE_FOLDER_COMMAND[@]}" > tmp/filelist.txt;
+else 
+	find $WHERETOSEARCH -type f \( -name "*.cc" -or -name "*.c" -or -name "*.cpp" \) "${EXCLUDE_FOLDER_COMMAND[@]}" > tmp/filelist.txt;
 fi
+
+#echo find $WHERETOSEARCH -type f \( -name "*.cc" -or -name "*.c" -or -name "*.cpp" \) -not -path "*src2*" -not -path "*src*"
+#find $WHERETOSEARCH -type f \( -name "*.cc" -or -name "*.c" -or -name "*.cpp" \) -not -path "*src2*" -not -path "*src*"
+#exit 1
 
 # step 2: grep for preprocessor statements
 
