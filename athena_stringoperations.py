@@ -1,6 +1,8 @@
 
 
 import string
+import sys
+
 
 from athena_globalsymbols import *
 
@@ -43,6 +45,8 @@ def extract_symbols_from_statement (statement):
         result.append(tempstring[1])  # for ifndef/ifdef XYZ
     elif tempstring[0].startswith ('#if'):
         result += get_symbols_for_if_clause ( [tempstring[0][3:]] + tempstring[1:] )
+    elif tempstring[0].startswith ('#elif'):
+        result += get_symbols_for_if_clause ( [tempstring[0][3:]] + tempstring[1:] )
     elif (tempstring[0].startswith ('#else') or tempstring[0].startswith ('#endif') ):
         result.append(tempstring[0])  
 
@@ -61,6 +65,8 @@ def extract_symbols_from_statement (statement):
 # 
 # ---------------------------------------------
 def get_symbols_for_if_clause (string_list):
+    #sys.stderr.write ("get_symbols_for_if_clause ({0})\n".format(str(string_list)))
+                      
     result = []
     for string in string_list:
         if len(string) > 0:
@@ -73,6 +79,7 @@ def get_symbols_for_if_clause (string_list):
     if DEBUG:
         print ("get_symbols_for_if_clause (" + str(string_list) + "): " + str(result))
          
+    #sys.stderr.write (" --> result: {0}\n".format(str(result)))         
     return result
 
 VALID_IDS = string.ascii_letters + string.digits + '_'
@@ -81,8 +88,9 @@ VALID_FIRST_LETTERS = string.ascii_letters + '_'
 # input: a string
 # output: a list of symbols in the string
 def extract_symbols_from_string (mystring):
+   
     # if mystring is a logical operator, there is no symbol to search for
-    if mystring.lower() in ['or','and','&&','||','&','|','!','#if']:
+    if mystring.lower() in ['or','and','&&','||','&','|','!','#if','#elif','if','defined']:
         return []
     else:
         # read from left to right until we hit a letter or underscore
@@ -104,7 +112,7 @@ def extract_symbols_from_string (mystring):
                     # we have found the end of a symbol, so add it to the result list
                     # unless it is a logical operator
                     parse_mode = False
-                    if not symbol.lower() in ['or','and','not','defined','true','false']: 
+                    if not symbol.lower() in ['or','and','not','defined','true','false','if']: 
                         result.append(symbol)
                     symbol = ''
                 else:
@@ -113,7 +121,7 @@ def extract_symbols_from_string (mystring):
         if parse_mode:
             # we have reached the end of the string and we are still in 
             # parse mode, so symbol needs to be added to the result list
-            if not symbol.lower() in ['or','and','not','defined','true','false']:
+            if not symbol.lower() in ['or','and','not','defined','true','false','if']:
                 result.append(symbol)
             else:
                 its_ok_to_be_empty = True

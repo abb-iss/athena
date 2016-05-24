@@ -132,7 +132,7 @@ fi
 
 
 while read filename; do
-perl -X -p -e 's/\\\n//' $filename 2> /dev/null | gcc -fpreprocessed -dD -E -xc - 2> /dev/null | perl -X -p -e 's/\t/ /g' 2> /dev/null  | perl -X -p -e 's/#\s+/#/g' 2> /dev/null  | grep -E -H --label="$filename" --line-number "#if|#els|#endif" | grep -v "_H " | grep -v "_H_" >> $TMPFILE     
+perl -X -p -e 's/\\\n//' $filename 2> /dev/null | gcc -fpreprocessed -dD -E -xc - 2> /dev/null | perl -X -p -e 's/\t/ /g' 2> /dev/null  | perl -X -p -e 's/#\s+/#/g' 2> /dev/null  | grep -E -H --label="$filename" --line-number "#if|#el|#endif" | grep -v "_H " | grep -v "_H_" >> $TMPFILE     
 done <tmp/filelist.txt
 
 if [ "$DELETETEMPFILES" == "true" ]; then 

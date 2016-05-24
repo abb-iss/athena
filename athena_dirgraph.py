@@ -162,7 +162,7 @@ def create_graph ():
                      
 #                 print ("create_graph() Node n: " + str(n))
                 
-                if (previous_line_number != occurrence[1]):
+                if (previous_line_number != occurrence[1]):  # symbol is on a different line than previous symbol
                     try:
                         for node in path[-1]:
                             edge = Edge (node, n)
