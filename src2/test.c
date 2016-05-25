@@ -9,3 +9,9 @@
 #ifdef "string"
 
 #endif
+
+
+#if strict || digraph || foo
+
+
+#endif

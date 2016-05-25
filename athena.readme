@@ -23,9 +23,20 @@ Supported options:
 
 Output:
 The program outputs an SVG file that can be viewed with most web browsers or with Inkscape. 
-It also produces an output in PDF format.
+The file index.html provides a basic SVG viewer with branch highlighting. To use it,
+open the file with a browser and load the desired SVG file. Clicking on a node label will
+highlight all parent nodes.
 
-Limitations/Known Bugs:
-- boost contains at least one symbol in double quotes ("string"), this causes dot to crash
+Limitations:
+- symbols that clash with the keywods of Graphviz (node, edge, graph, digraph, subgraph, strict) are renamed to <name>___Athena
+- symbols that contain double quotes have the double quotes removed
+- "0" as a symbol is not yet supported. It is however used to comment out lines of code, e.g.
+		#if 0
+		<code here>
+		#endif
+
+
+Known Bugs/untested:
+- absolute path names do NOT work in exclude_directories.txt
 
 

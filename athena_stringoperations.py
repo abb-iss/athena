@@ -6,19 +6,24 @@ import sys
 
 from athena_globalsymbols import *
 
+ATHENA_SUFFIX = '___Athena'
 
-# input: "foo"
-# output: foo
-# input: bar
-# output: bar
-def remove_quotes (str):
-    if str.startswith('"'):
-        str = str [1:]
+# The dot language has certain restrictions for the symbol names
+# 1. quotes must be escaped with a backslash
+# 2. reserved words cannot be used: node, edge, graph, digraph, subgraph, strict  
+# this function adds ___Athena to these keywords
+def adapt_definition_for_dot (str):
+    if str.lower() in [ 'node', 'edge', 'graph', 'digraph', 'subgraph', 'strict' ]:
+        return str + ATHENA_SUFFIX
     
-    if str.endswith('"'):
-        str = str [:-1]
+    
+#     if str.startswith('"'):
+#         str = str [1:]
+#      
+#     if str.endswith('"'):
+#         str = str [:-1]
         
-    return str
+    return str.replace ('"', '')
 
 # input:  X / Y / Z /
 # output: X / Y /

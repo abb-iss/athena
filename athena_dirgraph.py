@@ -223,7 +223,7 @@ def parse_input (filename):
 #                 sys.stderr.write("Filename:    '" + filename + "\n")
 #                 sys.stderr.write("Line number: '" + str(linenumber) + "\n")
 
-            definition = remove_quotes (definition) # TODO: also change definition names that clash with Graphviz reserved words
+            definition = adapt_definition_for_dot (definition) # TODO: also change definition names that clash with Graphviz reserved words
             
             symbols.add(definition)
             
