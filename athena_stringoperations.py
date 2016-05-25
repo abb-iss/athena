@@ -6,6 +6,20 @@ import sys
 
 from athena_globalsymbols import *
 
+
+# input: "foo"
+# output: foo
+# input: bar
+# output: bar
+def remove_quotes (str):
+    if str.startswith('"'):
+        str = str [1:]
+    
+    if str.endswith('"'):
+        str = str [:-1]
+        
+    return str
+
 # input:  X / Y / Z /
 # output: X / Y /
 def remove_last_path_entry (path):
