@@ -79,8 +79,6 @@ def extract_symbols_from_statement (statement):
 #  #if X <op> Y
 #  #if <expr> <and/or> <expr>
 # 
-# TODO to be implemented
-# 
 # 
 # ---------------------------------------------
 def get_symbols_for_if_clause (string_list):
