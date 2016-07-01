@@ -182,10 +182,12 @@ if [ $? -ne 0 ]; then
     echo "* dot failed. Keeping tmp/out.dot for debugging purposes."
     exit 1
 else
+    mv tmp/out.dot graphs/$OUTPUTFILENAME.dot
+    echo -e "* ${GREENCOLOR}Graph written to graphs/$OUTPUTFILENAME.dot $DEFAULTCOLOR"
     if [ "$DELETETEMPFILES" == "true" ]; then
     	rm tmp/out.dot
     	rm $MAKEFILEDEFINITIONS
-	fi
+    fi
 fi
 
 echo -e "* ${GREENCOLOR}Graph written to graphs/$OUTPUTFILENAME.svg $DEFAULTCOLOR"
