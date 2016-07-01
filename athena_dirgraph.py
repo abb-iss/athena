@@ -27,9 +27,13 @@ class Node:
 
     def __init__(self, name, is_root = False):
        self.name = name
+       if self.name.find('$') == -1:
+           self.clean_name = self.name
+       else:
+           self.clean_name = name.replace('$', '_DL_')
        self.is_root = is_root
        Node.name_to_node [name] = self
-   
+
     @staticmethod   
     def get_node_by_name (name):
         return Node.name_to_node [name]
@@ -98,7 +102,7 @@ class Edge:
             print (source + "--(" + str (Edge.weight[k]) + ")-->" + target) 
     
     def __str__ (self):
-        return self.source.name + "->" + self.target.name
+        return self.source.clean_name + "->" + self.target.clean_name
 
 # input: a list of lists, eg [ [src], [A, B], [E] ]
 # output: a string representation of the list
@@ -263,7 +267,7 @@ def create_dot (edge_weight_threshold = 1, show_weight = True):
     for edge in Edge.all_edges:
         weight = str(Edge.get_weight(edge.source.name, edge.target.name)) 
         if Edge.get_weight(edge.source.name, edge.target.name) >= edge_weight_threshold:
-            result += edge.source.name + "->" + edge.target.name + ' [fontsize="8.0"; style="dashed"; fontname="Helvetica"; label = "'+weight + '"; weight="'+weight+'"; ';
+            result += edge.source.clean_name + "->" + edge.target.clean_name + ' [fontsize="8.0"; style="dashed"; fontname="Helvetica"; label = "'+weight + '"; weight="'+weight+'"; ';
             
             if show_weight:
                 result += 'penwidth="'+str(min(Edge.get_weight(edge.source.name, edge.target.name),5))+'";' # limit the width of edges to 5
@@ -272,10 +276,10 @@ def create_dot (edge_weight_threshold = 1, show_weight = True):
             
             if (edge.source.name != MODEL_NAME):
                 width = symbols_map [edge.source.name]
-                result += '{0} [label="{0}\\n({1})"; shape="box"; ];\n'.format(edge.source.name, width)
+                result += '{0} [label="{0}\\n({1})"; shape="box"; ];\n'.format(edge.source.clean_name, width)
 
             width = symbols_map [edge.target.name]
-            result += '{0} [label="{0}\\n({1})"; shape="box"; ];\n'.format(edge.target.name, width)
+            result += '{0} [label="{0}\\n({1})"; shape="box"; ];\n'.format(edge.target.clean_name, width)
 
     
     if MAKEFILE_INFO_FILE != 'n/a':
