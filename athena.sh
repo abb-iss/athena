@@ -171,6 +171,19 @@ echo -e "* ${GREENCOLOR}Temp output written to $TMPFILE (format: filename line# 
 echo "* Running Python script to compute graph"
 python athena_dirgraph.py $TMPFILE $MAKEFILEDEFINITIONS $OUTPUTFILENAME "$@" > tmp/out.dot
 
+
+dotfilesize=$(wc -c <"tmp/out.dot")
+
+echo "* Checking size of generated graph...  ${dotfilesize} byte"
+
+# file size in bytes that triggers a warning
+thresholdsize=1000000
+
+if [ $dotfilesize -ge $thresholdsize ]; then
+    echo -e "* ${YELLOWCOLOR}Warning: The generated graph is huge. dot may take VERY LONG to render the graph. $DEFAULTCOLOR"
+fi
+
+
 echo "* Running dot to visualize graph"
 #dot -Tpdf tmp/out.dot -o graphs/$OUTPUTFILENAME.pdf
 #echo -e "* ${GREENCOLOR}Output written to graphs/$OUTPUTFILENAME.pdf $DEFAULTCOLOR"
